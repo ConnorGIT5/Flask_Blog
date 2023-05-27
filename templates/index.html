@@ -1,25 +1,33 @@
-<h1>Hello World!</h1>
+{% extends 'base.html' %}
 
-<p>This is my first webpage using flask!</p>
 
-<p>Use --debug to see changes
-	<br>You don't need to spot and start the server each time
-	<br>
-	<br>This site is being developed by {{first_name}}<br>	
+{% block content %}
 
-<p>{{ stuff|safe }}</p>
 
-{% for topping in favorite_pizza %}
-	{% if topping == 21 %}
-		{{topping + 1000}}<br/>
-	{% else %}
-		{{ topping }}<br/>
-	{% endif %}
-	
-{% endfor %}
+	<h1>Hello World!</h1>
 
-<br/><br/>
-{{ favorite_pizza.3 + 100 }}
-{{ favorite_pizza.0 }}
+	<p>This is my first webpage using flask!</p>
 
+	<p>Use --debug to see changes
+		<br>You don't need to spot and start the server each time
+		<br>
+		<br>This site is being developed by {{first_name}}<br>	
+
+	<p>{{ stuff|safe }}</p>
+
+	{% for topping in favorite_pizza %}
+		{% if topping == 21 %}
+			{{topping + 1000}}<br/>
+		{% else %}
+			{{ topping }}<br/>
+		{% endif %}
+		
+	{% endfor %}
+
+	<br/><br/>
+	{{ favorite_pizza.3 + 100 }}
+	{{ favorite_pizza.0 }}
+
+
+{% endblock %}
 
