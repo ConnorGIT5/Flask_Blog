@@ -1,0 +1,2 @@
+* ".gitignore" was deleted when I pushed the files to git. hello.py was included in the .gitignore file, but it was 
+  pushed regardless. I'm going to work on this.
