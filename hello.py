@@ -26,7 +26,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-# flask login code
+# flask login 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -126,6 +126,7 @@ def post(id):
 
 # edit a post
 @app.route('/posts/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_post(id):
 	post = Posts.query.get_or_404(id)
 	form = PostForm()
@@ -149,6 +150,7 @@ def edit_post(id):
 
 # adding the post page
 @app.route('/add-post', methods=['GET', 'POST'])
+# @login_required
 def add_post():
 	form = PostForm()
 
@@ -214,6 +216,7 @@ with app.app_context():
 
 
 @app.route('/delete/<int:id>')
+@login_required
 def delete(id):
 	user_to_delete = Users.query.get_or_404(id)
 	name = None
@@ -334,7 +337,7 @@ def index():
 	stuff = "This is <strong>Bold</strong> Text"
 
 	# website version message
-	flash("Welcome to Version 0.17.0 of my Blog!")
+	flash("Welcome to Version 0.24.0 of my Blog!")
 	favorite_pizza = ["Pepperoni", "Cheese", "Mushrooms", 21]
 
 	return render_template("index.html",
