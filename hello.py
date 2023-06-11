@@ -17,10 +17,10 @@ app = Flask(__name__) #helps flask find all the files in the directory
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 #MySql db     ex: 'mysql://username:password@localhost/db_name'
-app.config['SQLALCHEMY_DATABASE_URI'] = '#'
+app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 # the secret key
-app.config['SECRET_KEY'] = "#"
+app.config['SECRET_KEY'] = ""
 # initializing the database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -75,6 +75,30 @@ def logout():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
+	form = UserForm()
+	id = current_user.id
+	name_to_update = Users.query.get_or_404(id) # if int:id = 3, looks for it. If no 3, then 404 error
+	if request.method == "POST":
+		name_to_update.name = request.form['name']
+		name_to_update.email = request.form['email']
+		name_to_update.favorite_color = request.form['favorite_color']
+		name_to_update.username = request.form['username']
+		try:
+			db.session.commit()
+			flash("User updated successfully.")
+			return render_template("dashboard.html",
+				form=form,
+				name_to_update = name_to_update)
+		except:
+			flash("Error: try again.")
+			return render_template("dashboard.html",
+				form=form,
+				name_to_update = name_to_update)
+	else:
+		return render_template("dashboard.html",
+				form=form,
+				name_to_update = name_to_update,
+				id = id)
 	return render_template('dashboard.html')
 
 
@@ -258,6 +282,7 @@ def update(id):
 		name_to_update.name = request.form['name']
 		name_to_update.email = request.form['email']
 		name_to_update.favorite_color = request.form['favorite_color']
+		name_to_update.username = request.form['username']
 		try:
 			db.session.commit()
 			flash("User updated successfully.")
@@ -297,7 +322,7 @@ def add_user():
 		user = Users.query.filter_by(email=form.email.data).first() # queries the database looking for whatever email address is just types in. If it exists, it will return first. This checks for duplicates.
 		if user is None: # if there isn't a duplicate email. i.e., if the email in the submit form is unique. 
 			# password hashing
-			hashed_pw = generate_password_hash(form.password_hash.data, "#")		
+			hashed_pw = generate_password_hash(form.password_hash.data, "")		
 			user = Users(username=form.username.data, name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=hashed_pw) # the form data because the data for 'user'
 			db.session.add(user) # adds the user to the database
 			db.session.commit() # this is how you commit the addition
@@ -337,7 +362,7 @@ def index():
 	stuff = "This is <strong>Bold</strong> Text"
 
 	# website version message
-	flash("Welcome to Version 0.24.0 of my Blog!")
+	flash("Welcome to Version 0.25.0 of my Blog!")
 	favorite_pizza = ["Pepperoni", "Cheese", "Mushrooms", 21]
 
 	return render_template("index.html",
