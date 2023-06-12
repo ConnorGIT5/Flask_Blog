@@ -1,0 +1,103 @@
+Installation
+
+Flask Blog Documentation
+
+#####In git bask######################################
+$ mkdir /c/flaskBlog
+	//this creates the flaskBlog direction
+$ python -m venv virt
+	//this create a virtual environment named virtual
+	//venv comes with python
+$ source virt/Scripts/activate
+	//this activates the virtual environment
+$ clear
+	//the following should be shown after running clear
+(virt)
+con@desktop-23r2r MINGw64 /c/flaskBlog
+$
+	//that's what should be shown
+	//running ($ deactivate) will end the virtual environment
+$ pip freeze
+	// only (virt) will appear because no other python libs are 	installed
+$ pip install flask
+	//installs the Python library Flask
+	//if flask doesn't install correctly, reinstall Python
+$ pip freeze
+	//should show the following:
+	  blinker==1.6.2
+	  click==8.1.3
+	  colorama=0.4.6
+	  Flask==2.3.2
+	  itsdangerous==2.1.2
+	  Jinja2==3.1.2
+	  MarkupSafe==2.1.2
+	  Werkzeug==2.3.4
+	  (virt)
+
+$ touch hello.py
+	//makes a python file in the flaskBlog directory
+
+(((((in Sublime Text))))))))))))))))))))))))))))))))))))))))
+
+Project-> Add Folder to Project...
+	This PC -> OS (C:) -> flaskBlog -> Enter !!!Don't click Virt!!!
+
+(((((in Hello.py)))))))))))))))))))))))))))))))))))))))))))))
+
+from flask import Flask, render_template
+
+
+# Create an instance of Flask that runs all the things
+app = Flask(__name__) #helps flask find all the files in the directory
+
+# Crate a route decorator (ex: "about.html" is a route)
+@app.route('/')
+
+def index():
+	return "<h1>Hello World!<h1>"
+
+#####In Git Bash###################################
+
+$ export FLASK_ENV=development
+
+$ export FLASK_APP=hello.py
+	//The flask app is running on hello.py
+$ flask run
+	//This runs the web server that comes with Flask
+	// do "flask run --debug" to show changes when code is edited
+
+(((((in Hello.py)))))))))))))))))))))))))))))))))))))))))))))
+from flask import Flask, render_template
+
+
+# Create an instance of Flask that runs all the things
+app = Flask(__name__) #helps flask find all the files in the directory
+
+# Crate a route decorator (ex: "about.html" is a route)
+@app.route('/')
+
+#def index():
+#	return "<h1>Hello World!<h1>"
+
+def index():
+	return render_template("index.html")
+
+@app.route('/user/<name>') # localhost:5000/user/con
+
+def user(name):
+	return "<h1>Hello {}!!!</h1>".format(name)
+
+(((((in Sublime Text)))))))))))))))))))))))))))))))))))))))))
+create a file called 'index.html' in the flaskBlog folder
+
+(((((in index.html)))))))))))))))))))))))))))))))))))))))))))))
+<h1>Hello World!</h1>
+
+<p>This is my first webpage using flask!</p>
+
+<p>Use --debug to see changes
+	<br>You don't need to spot and start the server each time</p>
+
+***running localhost:5000 should show the html***
+***running locahost:5000/user/mom should show "Hello Mom!"
+
