@@ -1,0 +1,209 @@
+Page 3 : Error Page and GitHub Version Control
+
+(((((In hello.py))))))))))))))))))))))))))))))))))))))
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template("404.html"), 404
+
+#this renders the 404 page when the 404 error happens
+
+(((((In 404.html)))))))))))))))))))))))))))))))))))))))))))
+<br/>
+<center>
+<h1>404 Error</h1>
+<p>Page Not Found - try again...
+
+</center>
+
+<!-- this should work -->
+
+
+##### In Git Bash #############################################
+We have to create some ssh keys and push to GitHub
+
+$ ctrl+c
+	This ends the server
+$ deactivate
+	end the virtual environment 
+$ cd ~/
+$ pwd
+/c/Users/con
+
+$ mkdir .ssh
+	The dot (.) makes it a hidden directory
+$ cd .ssh
+$ pwd 
+/c/Users/codemy/.ssh
+
+$ ls
+( nothing )
+
+ssh keygen.exe
+enter -> enter -> enter
++---[RSA 3072]----+
+| &*^7 678(*&^ #$#|
+| *& 873784       |
+|  $ 89374        |
+|    *3@*         |
++----[SHA256]-----+
+
+$ ls
+id_rsa  id_sra.pub
+	( github uses the public (.pub) one )
+
+$ cat id_rsa.pub
+DHUW#R7gW&*#Gr&#grUWIRg3kWU&rgW#R7gW&RgWJFEkWJFg7W#fh&*r3*IW&RgWghjfW
+D@Q&DY*@HG#&*RH*&#RRgUYrurt&#RTkS#R7tW&#rtUerkdha7dgig7di2*&GDo7gd2GD
+d7dg*D27g*2G&do8&g2do*&ADg2oAUDWoud7@DgI@&gdUIosduG&@gd@&dgOAdgud@dg8
+dG&*2do&@gdoUI@gdoUIgdI27dgDI ( for 8 lines )
+	( right click and copy all this text )
+
+*****( In GitHub )************************************************
+Account icon -> Settings -> SSH and GPG keys -> New SSH Key -> Paste Key
+-> enter password -> ! Done !
+
+##### In Git Bash #############################################
+$ cd /c/flaskBlog
+
+$ ls
+__pycache__/ hello.py templates/ virt/
+
+$ touch .gitignore
+	( (.) means it's hidden. We want to ignore virt/ )
+
+$ ls
+__pycache__/ hello.py templates/ virt/ 
+
+((((( In .gitignore in the Sublime Text editor)))))))))))))))))))
+.gitignore
+
+virt/
+
+$ source virt/Scripts/activate
+(virt)
+
+$ git config --global user.name "Kamala Harris" -> enter
+(virt)
+	( put in your name )
+
+$ git config --global user.email "connorroweofficial@gmail.com" -> enter
+(virt)
+
+$ git config --global push.default matching -> enter
+(virt)
+
+$ git config --global alias.co checkout
+(virt)
+
+$ git init -> enter
+Initialized empty Git repository in C:/flaskBlog/.git/
+(virt)
+con@DESKTOP-53GD45 MINGW64 /c/flaskBlog (master)
+	( you're now in the master branch
+
+$ git add .
+(virt)
+	( git is now turned on )
+
+$ git commit -am 'first initial commit' -> enter
+[master (root-commit) 2a383c2] first initial commit
+ 6 files changed, 88 insertions(+)
+ create mode 100644 __pycache__/hello.cpython-310.pyc
+ create mode 100644 hello.py
+ create mode 100644 templates/404.html
+ create mode 100644 templates/500.html
+ create mode 100644 templates/index.html
+ create mode 100644 templates/user.html
+(virt)
+
+***** In GitHub ***********************************************
+Click account icon -> Your Repositories -> New -> Set it to public or priv
+-> ...or push from an existing repository from the command line ->
+-> copy and paste the commands into Git Bash and run them one by one
+
+##### In Git Bash #############################################
+$ git remote add origin https://github.com/ConnorGIT5/flask_blog.git
+(virt)
+
+$ git branch -M main -> enter
+(virt)
+con@DESKTOP-GYW37WY MINGW64 /c/flaskBlog (main)
+
+$ git push -u origin main -> enter
+connorEnumerating objects: 10, done.
+Counting objects: 100% (10/10), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (10/10), 2.11 KiB | 719.00 KiB/s, done.
+Total 10 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/ConnorGIT5/flask_blog.git
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+(virt)
+
+((((( In hello.py))))))))))))))))))))))))))))))))))))))))))))))))
+	# make some changes so you can save the new changes to the GIT repo
+	# below is the changed code
+
+# Invalid URL. File not found
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template("404.html"), 404
+
+# internal server error
+@app.errorhandler(500)    
+def page_not_found(e):
+	return render_template("500.html"), 500
+
+((((( In 500.html))))))))))))))))))))))))))))))))))))))))))))))))
+<br/>
+<center>
+<h1>500 Internal Server Error</h1>
+<p>try again...
+
+</center>
+
+##### In Git Bash #############################################
+	// follow these steps anytime you want to make a change to GitHub
+
+$ git add . -> enter     // adds all the files to Git
+(virt)
+
+$ git commit -am 'tweaked 500.html and hello.py' -> enter
+
+[main 41a23fa] tweaked 500.html and hello.py
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+(virt)
+
+$ git push -> enter
+Enumerating objects: 9, done.
+Counting objects: 100% (9/9), done.
+Delta compression using up to 4 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 570 bytes | 570.00 KiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+To https://github.com/ConnorGIT5/flask_blog.git
+   7k234s0..52a47fa  main -> main
+(virt)
+
+!!!!!!!!!!! The rest of the documentation will be in Google Drive !!!!!!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
