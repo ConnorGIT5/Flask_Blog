@@ -16,4 +16,5 @@ Tasks
   An option to add other users as friends |
   An ios/android app |
   SEO for the website (SEO for developers in 100 seconds by Fireship on YouTube |
+  URLs for each blog post and user should have their username in the URL instead of IDs |
   
