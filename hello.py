@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm
 
+# test comment to see if git will push using just git add . -> git commit -> git push
+
 # Create an instance of Flask that runs all the things
 app = Flask(__name__) #helps flask find all the files in the directory
 # adding our database
