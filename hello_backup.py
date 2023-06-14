@@ -1,10 +1,13 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, ValidationError
+from wtforms.validators import DataRequired, EqualTo, Length
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime, date #when addiing stuff to database, this keeps track of the time
 from werkzeug.security import generate_password_hash, check_password_hash
+from wtforms.widgets import TextArea 
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm
 
 # Create an instance of Flask that runs all the things
 app = Flask(__name__) #helps flask find all the files in the directory
@@ -14,10 +17,10 @@ app = Flask(__name__) #helps flask find all the files in the directory
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 #MySql db     ex: 'mysql://username:password@localhost/db_name'
-app.config['SQLALCHEMY_DATABASE_URI'] = ''
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:jc999wLd@localhost/our_users'
 
 # the secret key
-app.config['SECRET_KEY'] = ""
+app.config['SECRET_KEY'] = "secret key "
 # initializing the database
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -31,6 +34,13 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
 	return Users.query.get(int(user_id))
+
+
+# creates the 'login' form
+class LoginForm(FlaskForm):
+	username = StringField("Username", validators=[DataRequired()])
+	password = PasswordField("Password", validators=[DataRequired()])
+	submit = SubmitField('Submit') 
 
 
 # creates the 'login' page
@@ -92,28 +102,36 @@ def dashboard():
 	return render_template('dashboard.html')
 
 
+# creates the blog post model
+class Posts(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(200))
+	content = db.Column(db.Text)
+	author = db.Column(db.String(100))
+	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+	slug = db.Column(db.String(200))
+
+# creates the post form
+class PostForm(FlaskForm):
+	title = StringField("Title", validators=[DataRequired()]) 
+	content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+	author = StringField("Author", validators=[DataRequired()])
+	slug = StringField("Slug", validators=[DataRequired()])
+	submit = SubmitField("Submit")
 
 # route to delete posts
 @app.route('/posts/delete/<int:id>')
-@login_required
 def delete_post(id):
 	post_to_delete = Posts.query.get_or_404(id)
-	id = current_user.id
-	if id == post_to_delete.poster.id: # if the id of the logged in user matches the id of the person who posted the post's id	
+	try:
+		db.session.delete(post_to_delete)
+		db.session.commit()
+		flash("Blog post deleted successfully.")
+		posts = Posts.query.order_by(Posts.date_posted)
+		return render_template('posts.html', posts=posts)
 
-		try:
-			db.session.delete(post_to_delete)
-			db.session.commit()
-			flash("Blog post deleted successfully.")
-			posts = Posts.query.order_by(Posts.date_posted)
-			return render_template('posts.html', posts=posts)
-
-		except:
-			flash('There was a problem deleting the post. Try again.')
-			posts = Posts.query.order_by(Posts.date_posted)
-			return render_template('posts.html', posts=posts)
-	else:
-		flash("You aren't authorized to delete that post.")
+	except:
+		flash('There was a problem deleting the post. Try again.')
 		posts = Posts.query.order_by(Posts.date_posted)
 		return render_template('posts.html', posts=posts)
 
@@ -138,7 +156,7 @@ def edit_post(id):
 	form = PostForm()
 	if form.validate_on_submit():
 		post.title = form.title.data # form.title.data: what was already filled out. post.title = what will be new
-		# post.author = form.author.data
+		post.author = form.author.data
 		post.slug = form.slug.data
 		post.content = form.content.data
 		# update database
@@ -147,19 +165,11 @@ def edit_post(id):
 		# return a message fr successful change
 		flash("Post has been updated.")
 		return redirect(url_for('post', id=post.id))
-
-
-	if current_user.id == post.poster_id:
-
-		form.title.data = post.title
-		# form.author.data = post.author
-		form.slug.data = post.slug
-		form.content.data = post.content
-		return render_template('edit_post.html', form=form)
-	else:
-		flash("You can not edit this person's post.")
-		posts = Posts.query.order_by(Posts.date_posted.desc())
-		return render_template("posts.html", posts=posts)
+	form.title.data = post.title
+	form.author.data = post.author
+	form.slug.data = post.slug
+	form.content.data = post.content
+	return render_template('edit_post.html', form=form)
 
 
 # adding the post page
@@ -169,13 +179,12 @@ def add_post():
 	form = PostForm()
 
 	if form.validate_on_submit():
-		poster = current_user.id
-		post = Posts(title=form.title.data, content=form.content.data,
-		 poster_id=poster, slug=form.slug.data)
+		post = Posts(title=form.title.data, content=form.content.data, 
+			author=form.author.data, slug=form.slug.data)
 		# clears form
 		form.title.data = ''
 		form.content.data = ''
-		# form.author.data = ''
+		form.author.data = ''
 		form.slug.data = ''
 		# posts data to the database
 		db.session.add(post)
@@ -195,6 +204,39 @@ def get_current_date():
 	}
 	return favorite_pizza
 	# return {"Date": date.today()}
+
+
+
+# Creating the database Model
+class Users(db.Model, UserMixin):
+	id = db.Column(db.Integer, primary_key=True)
+	username = db.Column(db.String(25), nullable=False, unique=True)
+	name = db.Column(db.String(100), nullable=False)
+	email = db.Column(db.String(200), nullable=False, unique=True)
+	favorite_color = db.Column(db.String(100))
+	date_added = db.Column(db.DateTime, default=datetime.utcnow)
+	# password hash column
+	password_hash = db.Column(db.String(128))
+
+	@property
+	def password(self):
+		raise AttributeError('Password is not a readable attribute.')		
+
+	@password.setter
+	def password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def verify_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
+
+
+	# create a String to designate what the model is
+	def __repr__(self):
+		return '<Name %r>' % self.name
+
+with app.app_context():
+	db.create_all()
 
 
 @app.route('/delete/<int:id>')
@@ -220,9 +262,19 @@ def delete(id):
 
 
 
+# Creating the user form class 
+class UserForm(FlaskForm):
+	name = StringField("Name", validators=[DataRequired()])
+	username = StringField("Username", validators=[DataRequired()])
+	email = StringField("Email", validators=[DataRequired()])
+	favorite_color = StringField("Favorite Color")
+	password_hash = PasswordField("Password", validators=[DataRequired(), EqualTo('password_hash2', message="Passwords must match.")])
+	password_hash2 = PasswordField("Confirm Password", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+
 # for updating the database records
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
-@login_required
 def update(id):
 	form = UserForm()
 	name_to_update = Users.query.get_or_404(id) # if int:id = 3, looks for it. If no 3, then 404 error
@@ -248,6 +300,18 @@ def update(id):
 				name_to_update = name_to_update,
 				id = id)
 
+# password form
+
+class PasswordForm(FlaskForm):
+	email = StringField("Enter email.", validators=[DataRequired()])
+	password_hash = PasswordField("Enter password.", validators=[DataRequired()])
+	submit = SubmitField("Submit")
+
+
+# Creating a form class 
+class NamerForm(FlaskForm):
+	name = StringField("What's your Name?", validators=[DataRequired()])
+	submit = SubmitField("Submit")
 
 
 @app.route('/user/add', methods=['GET', 'POST'])
@@ -258,7 +322,7 @@ def add_user():
 		user = Users.query.filter_by(email=form.email.data).first() # queries the database looking for whatever email address is just types in. If it exists, it will return first. This checks for duplicates.
 		if user is None: # if there isn't a duplicate email. i.e., if the email in the submit form is unique. 
 			# password hashing
-			hashed_pw = generate_password_hash(form.password_hash.data, "")		
+			hashed_pw = generate_password_hash(form.password_hash.data, "sha256")		
 			user = Users(username=form.username.data, name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=hashed_pw) # the form data because the data for 'user'
 			db.session.add(user) # adds the user to the database
 			db.session.commit() # this is how you commit the addition
@@ -298,7 +362,7 @@ def index():
 	stuff = "This is <strong>Bold</strong> Text"
 
 	# website version message
-	flash("Welcome to Version 0.30.0 of my Blog!")
+	flash("Welcome to Version 0.25.0 of my Blog!")
 	favorite_pizza = ["Pepperoni", "Cheese", "Mushrooms", 21]
 
 	return render_template("index.html",
@@ -362,45 +426,3 @@ def name():
 
 	return render_template("name.html", name = name, form = form)
 
-# creates the blog post model
-class Posts(db.Model):
-	id = db.Column(db.Integer, primary_key=True)
-	title = db.Column(db.String(200))
-	content = db.Column(db.Text)
-	# author = db.Column(db.String(100))
-	date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-	slug = db.Column(db.String(200))
-	# a foreign key to link the users (refers to primary key of the user)
-	poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-# creates a user model
-class Users(db.Model, UserMixin):
-	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(25), nullable=False, unique=True)
-	name = db.Column(db.String(100), nullable=False)
-	email = db.Column(db.String(200), nullable=False, unique=True)
-	favorite_color = db.Column(db.String(100))
-	date_added = db.Column(db.DateTime, default=datetime.utcnow)
-	# password hash column
-	password_hash = db.Column(db.String(128))
-	# user can have multiple posts
-	posts = db.relationship('Posts', backref='poster')
-
-
-	@property
-	def password(self):
-		raise AttributeError('Password is not a readable attribute.')		
-
-	@password.setter
-	def password(self, password):
-		self.password_hash = generate_password_hash(password)
-
-	def verify_password(self, password):
-		return check_password_hash(self.password_hash, password)
-
-	# create a String to designate what the model is
-	def __repr__(self):
-		return '<Name %r>' % self.name
-
-with app.app_context():
-	db.create_all()

@@ -2,7 +2,10 @@
 
 {% block content %}
 
+<h1>Edit Post</h1>
+
 {% for message in get_flashed_messages() %}
+
 
 	<div class="alert alert-success alert-dismissible fade show" role="alert">
  {{ message }}
@@ -19,11 +22,6 @@
 
         {{ form.title.label(class="form-label") }}
         {{ form.title(class="form-control") }}
-
-        <br>
-
-        {{ form.author.label(class="form-label") }}
-        {{ form.author(class="form-control") }}
 
         <br>
 

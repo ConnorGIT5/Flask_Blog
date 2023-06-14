@@ -12,26 +12,13 @@
 
 {% endfor %}
 
+{% if id == current_user.id %}
 
-
-{% if name %}
 	<h1>Update user.</h1>
-	<br>
-<table class="table table-hover table-bordered table-striped">
-{% for our_user in our_users %}
 
-	<tr>
-	<td>
-	{{ our_user.id }}. {{ our_user.name }} - {{ our_user.email }} - {{ our_user.favorite_color }}
-	</td>
-	</tr>
-{% endfor %}
-</table>
-	
-
-{% else %}
-	<h1>Update user.</h1>
 	<br>
+
+
 	<div class="shadow p-3 mb-5 bg-body-tertiary rounded">
 	<form action="/update/{{ name_to_update.id }}" method="POST">
 		{{ form.hidden_tag() }}
@@ -63,6 +50,13 @@
 </div>
 
 <br><br>
+
+{% else %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+ No do not have permission to edit this user.
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<h1>Access denied.</h1>
 
 {% endif %}
 
