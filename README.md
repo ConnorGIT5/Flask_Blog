@@ -3,6 +3,7 @@ re-created repo
 Tasks
   Change flash box color to red/yellow for errors. Only green is showing up |
   'sign in with Google' and 'sign in with username or email' |
+  User must confirm their email before being able to create an account |
   'forgot password' so people can change their password through their email |
   customizable blog post formats and designs |
   different categories for different blog posts |
@@ -19,4 +20,9 @@ Tasks
   URLs for each blog post and user should have their username in the URL instead of IDs |
   full list of all pip installations |
   instructions for all database related stuff |
+  search results are way too basic |
+  search should have author search, title search, and date search |
+  a feature for page 1, page 2, etc, and show results per page |
+  
+  * a remiender to be thankful for all the code that works with no error *
   
