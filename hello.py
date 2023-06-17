@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from datetime import datetime, date #when addiing stuff to database, this keeps track of the time
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm
+from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm, SearchForm
 
 # test comment to see if git will push using just git add . -> git commit -> git push
 
@@ -20,7 +20,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 # the secret key
 app.config['SECRET_KEY'] = ""
-# initializing the database
+# initializing the databases
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -33,6 +33,31 @@ login_manager.login_view = 'login'
 @login_manager.user_loader
 def load_user(user_id):
 	return Users.query.get(int(user_id))
+
+
+# passing data to navbar
+@app.context_processor   # passing info into the base file
+def base():
+	form = SearchForm()
+	return dict(form=form)
+
+
+
+# search function
+@app.route('/search', methods=['POST'])
+def search():
+	form = SearchForm()
+	posts = Posts.query    
+	if form.validate_on_submit():
+
+		post.searched = form.searched.data # getting data from the submitted form
+		# querying the database (simple)
+		posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
+		posts = posts.order_by(Posts.title).all() # returns the posts
+
+
+		return render_template("search.html", form=form, searched=post.searched,
+			posts=posts)
 
 
 # creates the 'login' page
@@ -300,7 +325,7 @@ def index():
 	stuff = "This is <strong>Bold</strong> Text"
 
 	# website version message
-	flash("Welcome to Version 0.30.0 of my Blog!")
+	flash("Welcome to Version 0.31.0 of my Blog!")
 	favorite_pizza = ["Pepperoni", "Cheese", "Mushrooms", 21]
 
 	return render_template("index.html",
