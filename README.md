@@ -20,7 +20,6 @@ Tasks
   URLs for each blog post and user should have their username in the URL instead of IDs |
   full list of all pip installations |
   instructions for all database related stuff |
-  search results are way too basic |
   search should have author search, title search, and date search |
   a feature for page 1, page 2, etc, and show results per page |
   If a blog post is edited, there should be a date that says when it was edited | 
