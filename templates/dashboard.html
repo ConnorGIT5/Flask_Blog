@@ -11,24 +11,29 @@
 
 {% endfor %}
 
-<h1>Dashboard.</h1>
+<h1>Dashboard</h1>
 <br>
-<p>You are logged in.</p> 
 
 <div class="card">
   <div class="card-header">
     {{ current_user.name }}
   </div>
   <div class="card-body">
-    <h5 class="card-title">User information.</h5>
+    <h5 class="card-title">User info</h5>
     <p class="card-text">
-    	
-    	<strong>Name: </strong>{{ current_user.name }}<br>
+    
+<div class='container'>
+	<div class ='row'>
+		<div class ='col-8'>
+
+    <strong>Name: </strong>{{ current_user.name }}<br>
 		<strong>Username: </strong>{{ current_user.username }}<br>
 		<strong>User Id: </strong>{{ current_user.id }}<br>
 		<strong>Email: </strong>{{ current_user.email }}<br>
 		<strong>Favorite color: </strong>{{ current_user.favorite_color }}<br>
 		<strong>Date joined: </strong>{{ current_user.date_added }}<br>
+		<strong>About The Author: </strong>{{ current_user.about_author }}<br>
+
 
     </p>
     <a href="{{ url_for('logout') }}" class="btn btn-warning btn-sm">Log out</a>
@@ -36,12 +41,22 @@
     <a href="{{ url_for('update', id=current_user.id )}}" class="btn btn-secondary btn-sm">Update profile</a>
 
 	<a href="{{ url_for('delete', id=current_user.id )}}" class="btn btn-danger btn-sm">Delete profile</a>
+	<br>
+
+	</div>
+	<div class='col-4'>
+				<img src="{{ url_for('static', filename='images/default-profile-picture1.jpg') }}" width="200" alighn="right">
+	</div>
+</div>
+</div>
+
+
 
   </div>
 
 </div>
 
-<br>
+<br><br>
 
 <div class="card">
   <div class="card-header">
@@ -72,16 +87,20 @@
 
 		<br>
 
+
+		<textarea name="about_author" class="form-control">{{ name_to_update.about_author }}
+		</textarea>
+
+		<br>
+
 		{{ form.submit(class="btn btn-primary btn-sm") }}
 
 	</form>
 
-
 </div>
 
+
 <!-- {(%) if current_user.is_authenticated (%)} <-- you don't need this statement because flask_login already handles it. The person will be redirected to the login page if they stumble upon this page. -->
-
-
 
 {% endblock %}
 

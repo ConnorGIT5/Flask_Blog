@@ -36,6 +36,10 @@
         {{ form.submit(class="btn btn-primary") }}
 
     </form>
+    {{ ckeditor.load() }}
+    {{ ckeditor.config(name='content') }}
+
+</div>
 
 {% else %}
 <h2>Must be logged-in to post.</h2>

@@ -5,13 +5,17 @@ from datetime import datetime, date #when addiing stuff to database, this keeps 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm, SearchForm
+from flask_ckeditor import CKEditor
 
 # test comment to see if git will push using just git add . -> git commit -> git push
 
 # Create an instance of Flask that runs all the things
 app = Flask(__name__) #helps flask find all the files in the directory
-# adding our database
 
+ckeditor = CKEditor(app)
+
+
+# adding our database
 # old sqllite db below
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
@@ -41,7 +45,17 @@ def base():
 	form = SearchForm()
 	return dict(form=form)
 
+# the admin page
 
+@app.route('/admin')
+@login_required
+def admin():
+	id = current_user.id
+	if id == 1:
+		return render_template("admin.html")
+	else:
+		flash("You must be admin to access page.")
+		return redirect(url_for('dashboard'))
 
 # search function
 @app.route('/search', methods=['POST'])
@@ -100,6 +114,7 @@ def dashboard():
 		name_to_update.email = request.form['email']
 		name_to_update.favorite_color = request.form['favorite_color']
 		name_to_update.username = request.form['username']
+		name_to_update.about_author = request.form['about_author']
 		try:
 			db.session.commit()
 			flash("User updated successfully.")
@@ -407,6 +422,7 @@ class Users(db.Model, UserMixin):
 	name = db.Column(db.String(100), nullable=False)
 	email = db.Column(db.String(200), nullable=False, unique=True)
 	favorite_color = db.Column(db.String(100))
+	about_author = db.Column(db.Text(500), nullable=True)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
 	# password hash column
 	password_hash = db.Column(db.String(128))
