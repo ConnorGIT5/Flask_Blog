@@ -8,7 +8,7 @@ Tasks
   customizable blog post formats and designs |
   different categories for different blog posts |
   a bottom banner with copyright and links |
-  a 'dark theme toggle' |
+  a 'dark theme' toggle |
   Area for column ads |
   Fix the color of the header navbar to blue |
   Format the date from ex: 2023-06-10 00:16:57 to June 10, 2023 @ 4:57pm |
@@ -24,6 +24,9 @@ Tasks
   a feature for page 1, page 2, etc, and show results per page |
   If a blog post is edited, there should be a date that says when it was edited | 
   allow another way to grant someone admin access without having to change info in python file |
+  In add_user.html, a user should be able to enter their 'About the Author' info |
+  update.html doesn't work now and needs to be fixed |
+  maybe add randomized profile picture, or select from a few presets | 
   
   * a remiender to be thankful for all the code that works with no error *
   
