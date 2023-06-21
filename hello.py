@@ -340,7 +340,7 @@ def index():
 	stuff = "This is <strong>Bold</strong> Text"
 
 	# website version message
-	flash("Welcome to Version 0.31.0 of my Blog!")
+	flash("Welcome to Version 0.38.09 of my Blog!")
 	favorite_pizza = ["Pepperoni", "Cheese", "Mushrooms", 21]
 
 	return render_template("index.html",
