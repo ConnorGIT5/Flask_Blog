@@ -25,7 +25,7 @@ Tasks
   If a blog post is edited, there should be a date that says when it was edited | 
   allow another way to grant someone admin access without having to change info in python file |
   In add_user.html, a user should be able to enter their 'About the Author' info |
-  update.html doesn't work now and needs to be fixed (resolved)✅ 
+  update.html doesn't work now and needs to be fixed (resolved)✅ |
   maybe add randomized profile picture, or select from a few presets | 
   
   * a remiender to be thankful for all the code that works with no error *
