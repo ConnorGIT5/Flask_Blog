@@ -6,6 +6,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from webforms import LoginForm, PostForm, UserForm, PasswordForm, NamerForm, SearchForm
 from flask_ckeditor import CKEditor
+from werkzeug.utils import secure_filename
+import uuid as uuid    # allows the creation of unique id numbers
+import os   # allows the profile pic file to be saved
 
 # test comment to see if git will push using just git add . -> git commit -> git push
 
@@ -24,6 +27,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = ''
 
 # the secret key
 app.config['SECRET_KEY'] = ""
+
+
+# tells the app where to save the files
+UPLOAD_FOLDER = "static/images/"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
+
+
+
 # initializing the databases
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -115,8 +126,20 @@ def dashboard():
 		name_to_update.favorite_color = request.form['favorite_color']
 		name_to_update.username = request.form['username']
 		name_to_update.about_author = request.form['about_author']
+		name_to_update.profile_pic = request.files['profile_pic']
+
+		# collect image name
+		pic_filename = secure_filename(name_to_update.profile_pic.filename)
+		# set uuid # sometimes users will upload profil pictures with the same file name. UUID will give a randomized id
+		pic_name = str(uuid.uuid1()) + "_" + pic_filename
+		# saving the image
+		saver = request.files['profile_pic']
+		# changed to a string to be saved to the database
+		name_to_update.profile_pic = pic_name
+
 		try:
 			db.session.commit()
+			saver.save(os.path.join(app.config['UPLOAD_FOLDER']), pic_name)
 			flash("User updated successfully.")
 			return render_template("dashboard.html",
 				form=form,
@@ -424,6 +447,8 @@ class Users(db.Model, UserMixin):
 	favorite_color = db.Column(db.String(100))
 	about_author = db.Column(db.Text(500), nullable=True)
 	date_added = db.Column(db.DateTime, default=datetime.utcnow)
+	# profile picture	
+	profile_pic = db.Column(db.String(300), nullable=True)
 	# password hash column
 	password_hash = db.Column(db.String(128))
 	# user can have multiple posts

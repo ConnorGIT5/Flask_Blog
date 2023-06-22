@@ -190,6 +190,38 @@ To https://github.com/ConnorGIT5/flask_blog.git
 !!!!!!!!!!! The rest of the documentation will be in Google Drive !!!!!!!!
 
 
+!!!!!!!!!!!!!!!!ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+$ git push
+To https://github.com/ConnorGIT5/Flask_Blog.git
+ ! [rejected]        main -> main (fetch first)
+error: failed to push some refs to 'https://github.com/ConnorGIT5/Flask_Blog.git'
+
+try:
+
+git fetch origin master
+git merge origin master
+After to wrote this code I received other error: (non-fast-forward)
+
+****************SOLUTION********************
+
+I write this code:
+
+git fetch origin master:tmp
+git rebase tmp
+git push origin HEAD:master
+git branch -D tmp
+And resolved my problem
+
+Share
+Improve this answer
+Follow
+answered Nov 21, 2016 at 0:41
+Aurelio A's user avatar
+Aurelio A
+
+
+https://www.outsystems.com/forums/discussion/71779/ckeditor-reactive-spell-checker-is-not-working-in-production/
 
 
 
