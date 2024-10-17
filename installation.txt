@@ -2,7 +2,7 @@ Installation
 
 Flask Blog Documentation
 
-#####In git bask######################################
+#####In git bash######################################
 $ mkdir /c/flaskBlog
 	//this creates the flaskBlog direction
 $ python -m venv virt
