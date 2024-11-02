@@ -9,6 +9,8 @@ from flask_ckeditor import CKEditor
 from werkzeug.utils import secure_filename
 import uuid as uuid    # allows the creation of unique id numbers
 import os   # allows the profile pic file to be saved
+import hiddensecrets
+import urllib
 
 # test comment to see if git will push using just git add . -> git commit -> git push
 
@@ -17,22 +19,34 @@ app = Flask(__name__) #helps flask find all the files in the directory
 
 ckeditor = CKEditor(app)
 
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 
 # adding our database
 # old sqllite db below
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 
 #MySql db     ex: 'mysql://username:password@localhost/db_name'
-app.config['SQLALCHEMY_DATABASE_URI'] = ''
+
+dbstring = hiddensecrets.dbstring
+secret_key = hiddensecrets.littlesecretkey
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://shrek:Layers123456789@db1.database.windows.net/default?driver=SQL+Server'
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://shrek:Layers123456789@default-db1.database.windows.net?trusted_connection=yes"
+
+app.config['SQLALCHEMY_DATABASE_URI'] = dbstring
+
+# params = urllib.parse.quote_plus('Driver={ODBC Driver 18 for SQL Server};Server=tcp:default-db1.database.windows.net,1433;Database=default;Uid=shrek;Pwd=Layers123456789;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
 
 # the secret key
-app.config['SECRET_KEY'] = ""
+app.config['SECRET_KEY'] = secret_key
 
 
 # tells the app where to save the files
 UPLOAD_FOLDER = "static/images/"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
-
 
 
 # initializing the databases
@@ -256,7 +270,7 @@ def get_current_date():
 	favorite_pizza = {
 	'Connor': 'Pepperoni',
 	'Tim': 'Supreme',
-	'Claire': 'Pineapple'
+	'Mateyo': 'Pineapple'
 	}
 	return favorite_pizza
 	# return {"Date": date.today()}
