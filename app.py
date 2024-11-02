@@ -31,14 +31,9 @@ ckeditor = CKEditor(app)
 dbstring = hiddensecrets.dbstring
 secret_key = hiddensecrets.littlesecretkey
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://shrek:Layers123456789@db1.database.windows.net/default?driver=SQL+Server'
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pymssql://shrek:Layers123456789@default-db1.database.windows.net?trusted_connection=yes"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = dbstring
 
-# params = urllib.parse.quote_plus('Driver={ODBC Driver 18 for SQL Server};Server=tcp:default-db1.database.windows.net,1433;Database=default;Uid=shrek;Pwd=Layers123456789;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
-# app.config['SQLALCHEMY_DATABASE_URI'] = "mssql+pyodbc:///?odbc_connect=%s" % params
 
 # the secret key
 app.config['SECRET_KEY'] = secret_key
