@@ -62,12 +62,12 @@ jobs:
         run: unzip release.zip
 
       
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_37BC09CF82194139924EB63CAA036B40 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1BE3964E636345A1B34E4BAF872755C9 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_68E59BDD61B34E35ADC43A22C269303D }}
+      # - name: Login to Azure
+      #   uses: azure/login@v2
+      #   with:
+      #     client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_37BC09CF82194139924EB63CAA036B40 }}
+      #     tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1BE3964E636345A1B34E4BAF872755C9 }}
+      #     subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_68E59BDD61B34E35ADC43A22C269303D }}
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
