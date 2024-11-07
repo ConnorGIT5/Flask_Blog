@@ -332,7 +332,7 @@ def add_user():
 		user = Users.query.filter_by(email=form.email.data).first() # queries the database looking for whatever email address is just types in. If it exists, it will return first. This checks for duplicates.
 		if user is None: # if there isn't a duplicate email. i.e., if the email in the submit form is unique. 
 			# password hashing
-			hashed_pw = generate_password_hash(form.password_hash.data, "")		
+			hashed_pw = generate_password_hash(form.password_hash.data, "sha256")		
 			user = Users(username=form.username.data, name=form.name.data, email=form.email.data, favorite_color=form.favorite_color.data, password_hash=hashed_pw) # the form data because the data for 'user'
 			db.session.add(user) # adds the user to the database
 			db.session.commit() # this is how you commit the addition
