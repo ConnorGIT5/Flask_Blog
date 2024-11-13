@@ -1,0 +1,5 @@
+follow these steps when changing the data model in the orm
+
+$ flask db migrate -m 'add your comment here'
+
+$ flask db upgrade
