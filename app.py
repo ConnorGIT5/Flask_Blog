@@ -137,6 +137,11 @@ def dashboard():
 		name_to_update.about_author = request.form['about_author']
 		name_to_update.profile_pic = request.files['profile_pic']
 
+		# check of profile picture already exists
+		# if request.files['profile_pic']:
+		# 	name_to_update.profile_pic = 
+
+
 		# collect image name
 		pic_filename = secure_filename(name_to_update.profile_pic.filename)
 		# set uuid # sometimes users will upload profil pictures with the same file name. UUID will give a randomized id
@@ -148,7 +153,7 @@ def dashboard():
 
 		try:
 			db.session.commit()
-			saver.save(os.path.join(app.config['UPLOAD_FOLDER']), pic_name)
+			saver.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_name))
 			flash("User updated successfully.")
 			return render_template("dashboard.html",
 				form=form,
@@ -270,27 +275,32 @@ def get_current_date():
 	return favorite_pizza
 	# return {"Date": date.today()}
 
-
+# delete user
 @app.route('/delete/<int:id>')
 @login_required
 def delete(id):
-	user_to_delete = Users.query.get_or_404(id)
-	name = None
-	form = UserForm()
+	# if your id is the same as the id you're trying to delete
+	if id == current_user.id:
+		user_to_delete = Users.query.get_or_404(id)
+		name = None
+		form = UserForm()
 
-	try:
-		db.session.delete(user_to_delete)
-		db.session.commit()
-		flash("User deleted successfully.")
+		try:
+			db.session.delete(user_to_delete)
+			db.session.commit()
+			flash("User deleted successfully.")
 
-		our_users = Users.query.order_by(Users.date_added) # users = the table | query = search | order_by = show data in a specific order
-		return render_template("add_user.html",
-		form=form, name=name, our_users=our_users)
+			our_users = Users.query.order_by(Users.date_added) # users = the table | query = search | order_by = show data in a specific order
+			return render_template("add_user.html",
+			form=form, name=name, our_users=our_users)
 
-	except:
-		flash("Unexpected error when trying to delete user.")
-		return render_template("add_user.html",
-		form=form, name=name, our_users=our_users)
+		except:
+			flash("Unexpected error when trying to delete user.")
+			return render_template("add_user.html",
+			form=form, name=name, our_users=our_users)
+	else:
+			flash("Unexpected error when trying to delete user.")
+			return redirect(url_for('dashboard'))
 
 
 
